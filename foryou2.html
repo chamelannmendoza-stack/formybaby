@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Safe Place 💌</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+
+  body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: 'Dancing Script', cursive;
+    overflow: hidden;
+    position: relative;
+    height: 100vh;
+  }
+
+  .page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page.active {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  h1 {
+    font-size: 38px;
+    margin-bottom: 25px;
+  }
+
+  .next-btn {
+    background: white;
+    color: black;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: 0.3s;
+  }
+
+  .next-btn:hover {
+    background: #ffcccc;
+  }
+
+  iframe {
+    border-radius: 12px;
+    margin-top: 20px;
+  }
+
+  /* Letter */
+  .letter {
+    background: #ff9999;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 0 25px rgba(255, 100, 100, 0.4);
+    font-size: 16px;
+    line-height: 1.7;
+    color: #fff;
+    max-width: 400px;
+  }
+
+  /* Roses */
+  .rose {
+    position: fixed;
+    top: -50px;
+    font-size: 22px;
+    animation: fall linear infinite;
+    opacity: 0.7;
+    z-index: 1;
+  }
+
+  @keyframes fall {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Hug gif */
+  .hug-gif {
+    width: 300px;
+    border-radius: 20px;
+    margin-top: 20px;
+  }
+
+  /* Fireworks */
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<!-- Page 1 -->
+<div class="page active" id="page1">
+  <h1>For you, my love.</h1>
+  <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1UPB5rYJ0bzn6mNSoAHrZC?si=PnSTffr1RTqbH61gH_k6-Q" width="300" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+  <button class="next-btn" onclick="nextPage()">Next →</button>
+</div>
+
+<!-- Page 2 -->
+<div class="page" id="page2">
+  <div class="letter">
+    Baby, listen to me.<br><br>
+    When the world turns cold and the noise gets too loud, come home to me—even from afar. Close your eyes, love. Breathe. You don't have to carry everything alone. Let the weight fall. Let it be me, even through a screen, who stays when everything else fades.<br><br>
+    When your heart grows tired of being brave, I'll be the stillness that reminds you it’s okay to rest. You don't have to speak for me to understand—I'll hear every unspoken word through the pauses, every quiet ache hidden in your messages, and I’ll hold it gently, the way I hold you in my mind.<br><br>
+    My words will be your safe place—warm, steady, and sure. When the light disappears, I'll be your dawn. When the world feels insincere, I'll be the truth that stays. And when nobody hears you scream, I'll be there, whispering back until you remember you're not alone.<br><br>
+    You’ll be safe here—through the storms, through the long nights, through the distance that tests but never weakens us. You'll be in my heart, now and forevermore.<br><br>
+    And as long as I have you, even across the miles, you will always, always be safe here.
+  </div>
+  <button class="next-btn" onclick="nextPage()">Next →</button>
+</div>
+
+<!-- Page 3 -->
+<div class="page" id="page3">
+  <h1>Need a hug?</h1>
+  <div>
+    <button class="next-btn" onclick="showHug()">Yes</button>
+    <button class="next-btn" onclick="showAnyway()">No</button>
+  </div>
+  <div id="hug-container" style="display:none;">
+    <img src="https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyMzJncXgzMTl5bnhvZWxrMjhtOWl3cGl2Nzdhc2N0dnZ6YnR3cHg4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5C2G4LqWO9Xiw/giphy.gif" class="hug-gif">
+  </div>
+  <div id="hug-message" style="margin-top:15px; font-size:18px;"></div>
+</div>
+
+<script>
+  let currentPage = 1;
+
+  function nextPage() {
+    const current = document.getElementById(`page${currentPage}`);
+    const next = document.getElementById(`page${currentPage + 1}`);
+    if (next) {
+      current.classList.remove('active');
+      next.classList.add('active');
+      currentPage++;
+    }
+  }
+
+  function showHug() {
+    document.getElementById('hug-container').style.display = 'block';
+    document.getElementById('hug-message').textContent = '';
+  }
+
+  function showAnyway() {
+    document.getElementById('hug-container').style.display = 'block';
+    document.getElementById('hug-message').textContent = "Hmph. I'm hugging you anyway.";
+  }
+
+  // Falling roses
+  function createRoses() {
+    const roses = ['🌹','🥀','🌺'];
+    for (let i = 0; i < 8; i++) {
+      const rose = document.createElement('div');
+      rose.classList.add('rose');
+      rose.textContent = roses[Math.floor(Math.random() * roses.length)];
+      rose.style.left = Math.random() * 100 + 'vw';
+      rose.style.animationDuration = (8 + Math.random() * 5) + 's';
+      rose.style.fontSize = (20 + Math.random() * 8) + 'px';
+      document.body.appendChild(rose);
+      setTimeout(() => rose.remove(), 13000);
+    }
+    setInterval(createRoses, 4000);
+  }
+
+  // Fireworks
+  const canvas = document.getElementById("fireworks");
+  const ctx = canvas.getContext("2d");
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+
+  class Particle {
+    constructor(x, y, color, velocity) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+      this.velocity = velocity;
+      this.alpha = 1;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    update() {
+      this.draw();
+      this.velocity.x *= 0.98;
+      this.velocity.y *= 0.98;
+      this.x += this.velocity.x;
+      this.y += this.velocity.y;
+      this.alpha -= 0.015;
+    }
+  }
+
+  let particles = [];
+  function startFireworks() {
+    setInterval(() => {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height / 2;
+      const color = `hsl(${Math.random() * 30 + 350}, 100%, 60%)`;
+      for (let i = 0; i < 40; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const speed = Math.random() * 4;
+        particles.push(new Particle(x, y, color, {
+          x: Math.cos(angle) * speed,
+          y: Math.sin(angle) * speed
+        }));
+      }
+    }, 2000);
+    animate();
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      if (p.alpha <= 0) particles.splice(i, 1);
+      else p.update();
+    });
+  }
+
+  window.onload = () => {
+    startFireworks();
+    createRoses();
+  };
+</script>
+
+</body>
+</html>
